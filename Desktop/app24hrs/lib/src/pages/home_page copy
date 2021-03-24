@@ -1,0 +1,213 @@
+import 'package:flutter/material.dart';
+import 'package:veinticuatrohoras/src/api/wordpress.dart';
+import 'package:veinticuatrohoras/src/pages/single_page.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({Key key}) : super(key: key);
+
+  static const routeName = 'home';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red.shade900,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.more_horiz),
+              onPressed: () {},
+            );
+          },
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Image.asset(
+              'assets/images/logotipo.png',
+              fit: BoxFit.cover,
+              height: 55,
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: FutureBuilder(
+        future: notes(),
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+          final _screenSize = MediaQuery.of(context).size;
+          if (snapshot.hasData) {
+            var posts = snapshot.data;
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                Map post = snapshot.data[index];
+                return GestureDetector(
+                  onTap: () => Navigator.of(context)
+                      .pushNamed(SinglePage.routeName, arguments: post),
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                    width: _screenSize.width * 0.65,
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.network(
+                            post['_embedded']['wp:featuredmedia'][0]
+                                    ['media_details']['sizes']['medium_large']
+                                ['source_url'],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(top: 10),
+                          child: Column(
+                            children: [
+                              Text(
+                                post['title']['rendered'],
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'RajdhaniSemiBold',
+                                    letterSpacing: .5),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    post['_embedded']['author'][0]['name'],
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: 'OpenSansRegular',
+                                        letterSpacing: 0.2),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
+  }
+}
+
+/*
+bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.red.shade900,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.ondemand_video),
+            label: 'texto2',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.apps),
+            label: 'texto3',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list_alt),
+            label: 'texto5',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.video_collection_sharp),
+            label: 'texto4',
+          ),
+        ],
+      ),
+      */
+
+/*
+
+FutureBuilder(
+        future: notes(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          //Ajustamos tamaño
+          final _screenSize = MediaQuery.of(context).size;
+          if (snapshot.hasData) {
+            var posts = snapshot.data;
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                Map post = snapshot.data[index];
+                return GestureDetector(
+                  onTap: () => Navigator.of(context)
+                      .pushNamed(SinglePage.routeName, arguments: post),
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                    width: _screenSize.width * 0.65,
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.network(
+                            post['_embedded']['wp:featuredmedia'][0]
+                                    ['media_details']['sizes']['medium_large']
+                                ['source_url'],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(top: 10),
+                          child: Column(
+                            children: [
+                              Text(
+                                post['title']['rendered'],
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'RajdhaniSemiBold',
+                                    letterSpacing: .5),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    post['_embedded']['author'][0]['name'],
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: 'OpenSansRegular',
+                                        letterSpacing: 0.2),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+
+*/
